@@ -19,7 +19,7 @@ pub struct LoadedImage {
 
     // Source location of the image
     device_handle: Handle,
-    _file_path: *const c_void, // TODO: not supported yet
+    file_path: *const c_void, // TODO: not supported yet
     _reserved: *const c_void,
 
     // Image load options
@@ -46,16 +46,9 @@ pub enum LoadOptionsError {
 }
 
 impl LoadedImage {
+    /// Gets the handle for the device from which the image was loaded.
     pub fn device_handle(&self) -> Handle {
         self.device_handle
-    }
-
-    pub fn image_base(&self) -> usize {
-        self.image_base
-    }
-
-    pub fn image_size(&self) -> u64 {
-        self.image_size
     }
 
     /// Get the load options of the given image. If the image was executed from the EFI shell, or from a boot
