@@ -196,6 +196,30 @@ impl BootServices {
         map_size
     }
 
+    pub fn memory_map_params(&self) -> MemoryMapParams {
+        let mut map_size = 0;
+        let mut map_key = MemoryMapKey(0);
+        let mut entry_size = 0;
+        let mut entry_version = 0;
+
+        let status = unsafe {
+            (self.get_memory_map)(
+                &mut map_size,
+                ptr::null_mut(),
+                &mut map_key,
+                &mut entry_size,
+                &mut entry_version,
+            )
+        };
+        assert_eq!(status, Status::BUFFER_TOO_SMALL);
+
+        MemoryMapParams {
+            map_size,
+            entry_size,
+            entry_version,
+        }
+    }
+
     /// Retrieves the current memory map.
     ///
     /// The allocated buffer should be big enough to contain the memory map,
@@ -828,4 +852,11 @@ pub enum TimerTrigger {
     /// Parameter is the delay in 100ns units.
     /// Delay of 0 will be signalled on next timer tick.
     Relative(u64),
+}
+
+#[derive(Debug)]
+pub struct MemoryMapParams {
+    pub map_size: usize,
+    pub entry_size: usize,
+    pub entry_version: u32,
 }
